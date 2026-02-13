@@ -137,7 +137,7 @@ const CustomerDashboard = () => {
               <CardContent>
                 <Typography variant="h6" color="primary" gutterBottom>
                   Next Best Action (NBA)
-                </emption>
+                </Typography>
                 <Typography>{trend.nba}</Typography>
               </CardContent>
             </Card>
