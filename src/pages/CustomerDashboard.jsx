@@ -66,10 +66,7 @@ const CustomerDashboard = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `/mcp/securelend-finance?prompt=${encodeURIComponent(analysisQuery)}`,
-        {
-          method: "POST",
-        }
+        `/mcp/securelend-finance?prompt=${encodeURIComponent(analysisQuery)}`
       );
       const result = await response.json();
       setAnalysisResult(result.choices[0].message.content);
@@ -140,7 +137,7 @@ const CustomerDashboard = () => {
               <CardContent>
                 <Typography variant="h6" color="primary" gutterBottom>
                   Next Best Action (NBA)
-                </Typography>
+                </emption>
                 <Typography>{trend.nba}</Typography>
               </CardContent>
             </Card>
