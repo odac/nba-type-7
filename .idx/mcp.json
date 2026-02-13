@@ -7,6 +7,17 @@
         "firebase-tools@latest",
         "experimental:mcp"
       ]
+    },
+    "competitive-analysis": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli",
+        "run",
+        "@janwilmake/competitive-analysis-demo",
+        "--config",
+        "{}"
+      ]
     }
   }
 }

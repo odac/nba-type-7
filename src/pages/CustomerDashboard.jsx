@@ -16,6 +16,7 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  CircularProgress,
 } from "@mui/material";
 import {
   LineChart,
@@ -44,6 +45,8 @@ const CustomerDashboard = () => {
   const [analysisModalOpen, setAnalysisModalOpen] = useState(false);
   const [competitor, setCompetitor] = useState("DBS");
   const [analysisQuery, setAnalysisQuery] = useState("");
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   if (!client) {
     return <Typography>Client not found</Typography>;
@@ -54,15 +57,30 @@ const CustomerDashboard = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleAnalysisModalOpen = () => setAnalysisModalOpen(true);
+  const handleAnalysisModalOpen = () => {
+    setAnalysisModalOpen(true);
+    setAnalysisResult(null);
+  };
   const handleAnalysisModalClose = () => setAnalysisModalOpen(false);
 
-  const handleAnalysisSubmit = () => {
-    const url = `https://server.smithery.ai/@janwilmake/competitive-analysis-demo?competitor=${encodeURIComponent(
-      competitor
-    )}&analysis=${encodeURIComponent(analysisQuery)}`;
-    window.open(url, "_blank");
-    handleAnalysisModalClose();
+  const handleAnalysisSubmit = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `/mcp/competitive-analysis?competitor=${encodeURIComponent(
+          competitor
+        )}&analysis=${encodeURIComponent(analysisQuery)}`,
+        {
+          method: "POST",
+        }
+      );
+      const result = await response.json();
+      setAnalysisResult(result.choices[0].message.content);
+    } catch (error) {
+      console.error("Error fetching analysis:", error);
+      setAnalysisResult("Failed to fetch analysis.");
+    }
+    setLoading(false);
   };
 
   return (
@@ -205,7 +223,7 @@ const CustomerDashboard = () => {
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: 400,
+                    width: 500,
                     bgcolor: "background.paper",
                     border: "2px solid #000",
                     boxShadow: 24,
@@ -219,35 +237,46 @@ const CustomerDashboard = () => {
                   >
                     Competitive Analysis
                   </Typography>
-                  <FormControl fullWidth sx={{ mt: 2 }}>
-                    <InputLabel id="competitor-select-label">
-                      Competitor
-                    </InputLabel>
-                    <Select
-                      labelId="competitor-select-label"
-                      value={competitor}
-                      label="Competitor"
-                      onChange={(e) => setCompetitor(e.target.value)}
-                    >
-                      <MenuItem value="DBS">DBS</MenuItem>
-                      <MenuItem value="OCBC">OCBC</MenuItem>
-                      <MenuItem value="UOB">UOB</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <TextField
-                    fullWidth
-                    label="What to analyse"
-                    sx={{ mt: 2 }}
-                    value={analysisQuery}
-                    onChange={(e) => setAnalysisQuery(e.target.value)}
-                  />
-                  <Button
-                    variant="contained"
-                    onClick={handleAnalysisSubmit}
-                    sx={{ mt: 2 }}
-                  >
-                    Generate Analysis
-                  </Button>
+                  {!analysisResult && !loading && (
+                    <>
+                      <FormControl fullWidth sx={{ mt: 2 }}>
+                        <InputLabel id="competitor-select-label">
+                          Competitor
+                        </InputLabel>
+                        <Select
+                          labelId="competitor-select-label"
+                          value={competitor}
+                          label="Competitor"
+                          onChange={(e) => setCompetitor(e.target.value)}
+                        >
+                          <MenuItem value="DBS">DBS</MenuItem>
+                          <MenuItem value="OCBC">OCBC</MenuItem>
+                          <MenuItem value="UOB">UOB</MenuItem>
+                        </Select>
+                      </FormControl>
+                      <TextField
+                        fullWidth
+                        label="What to analyse"
+                        sx={{ mt: 2 }}
+                        value={analysisQuery}
+                        onChange={(e) => setAnalysisQuery(e.target.value)}
+                      />
+                      <Button
+                        variant="contained"
+                        onClick={handleAnalysisSubmit}
+                        sx={{ mt: 2 }}
+                      >
+                        Generate Analysis
+                      </Button>
+                    </>
+                  )}
+                  {loading && <CircularProgress sx={{ mt: 2 }} />}
+                  {analysisResult && (
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="h6">Analysis Result:</Typography>
+                      <Typography>{analysisResult}</Typography>
+                    </Box>
+                  )}
                 </Box>
               </Modal>
             </Box>
