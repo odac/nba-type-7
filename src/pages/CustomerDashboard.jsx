@@ -43,7 +43,6 @@ const CustomerDashboard = () => {
   const client = clients.find((c) => c.id === parseInt(id));
   const [open, setOpen] = useState(false);
   const [analysisModalOpen, setAnalysisModalOpen] = useState(false);
-  const [competitor, setCompetitor] = useState("DBS");
   const [analysisQuery, setAnalysisQuery] = useState("");
   const [analysisResult, setAnalysisResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -67,11 +66,15 @@ const CustomerDashboard = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `/mcp/competitive-analysis?competitor=${encodeURIComponent(
-          competitor
-        )}&analysis=${encodeURIComponent(analysisQuery)}`,
+        `/mcp/securelend-finance`,
         {
           method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prompt: analysisQuery
+          })
         }
       );
       const result = await response.json();
@@ -162,7 +165,7 @@ const CustomerDashboard = () => {
           )}
         </Grid>
 
-        {/* Market Research & Competitor Analysis Buttons */}
+        {/* Market Research & Generate Analysis Buttons */}
         <Grid item xs={12}>
           {trend && (
             <Box>
@@ -174,7 +177,7 @@ const CustomerDashboard = () => {
                 sx={{ ml: 2 }}
                 onClick={handleAnalysisModalOpen}
               >
-                Competitive Analysis
+                Generate Analysis
               </Button>
               <Modal
                 open={open}
@@ -215,7 +218,7 @@ const CustomerDashboard = () => {
               <Modal
                 open={analysisModalOpen}
                 onClose={handleAnalysisModalClose}
-                aria-labelledby="competitive-analysis-modal-title"
+                aria-labelledby="generate-analysis-modal-title"
               >
                 <Box
                   sx={{
@@ -231,29 +234,14 @@ const CustomerDashboard = () => {
                   }}
                 >
                   <Typography
-                    id="competitive-analysis-modal-title"
+                    id="generate-analysis-modal-title"
                     variant="h6"
                     component="h2"
                   >
-                    Competitive Analysis
+                    Generate Analysis
                   </Typography>
                   {!analysisResult && !loading && (
                     <>
-                      <FormControl fullWidth sx={{ mt: 2 }}>
-                        <InputLabel id="competitor-select-label">
-                          Competitor
-                        </InputLabel>
-                        <Select
-                          labelId="competitor-select-label"
-                          value={competitor}
-                          label="Competitor"
-                          onChange={(e) => setCompetitor(e.target.value)}
-                        >
-                          <MenuItem value="DBS">DBS</MenuItem>
-                          <MenuItem value="OCBC">OCBC</MenuItem>
-                          <MenuItem value="UOB">UOB</MenuItem>
-                        </Select>
-                      </FormControl>
                       <TextField
                         fullWidth
                         label="What to analyse"

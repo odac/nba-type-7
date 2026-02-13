@@ -18,6 +18,17 @@
         "--config",
         "{}"
       ]
+    },
+    "securelend-finance": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli",
+        "run",
+        "securelend/financial-services",
+        "--config",
+        "{}"
+      ]
     }
   }
 }
