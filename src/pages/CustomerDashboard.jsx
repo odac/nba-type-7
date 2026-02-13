@@ -125,12 +125,24 @@ const CustomerDashboard = () => {
           )}
         </Grid>
 
-        {/* Market Research */}
+        {/* Market Research & Competitor Analysis Buttons */}
         <Grid item xs={12}>
           {trend && (
-            <>
+            <Box>
               <Button variant="outlined" onClick={handleOpen}>
                 Market Research
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{ ml: 2 }}
+                onClick={() =>
+                  window.open(
+                    "https://server.smithery.ai/@janwilmake/competitive-analysis-demo",
+                    "_blank"
+                  )
+                }
+              >
+                Competitor Analysis
               </Button>
               <Modal
                 open={open}
@@ -168,7 +180,7 @@ const CustomerDashboard = () => {
                   </Typography>
                 </Box>
               </Modal>
-            </>
+            </Box>
           )}
         </Grid>
       </Grid>
